@@ -91,14 +91,6 @@ Route::get('/resultat', [Homecontroller::class, 'evaluation_interne'])->name('re
         return view('dashadmin.profile');
     })->name('profile');
 
-// web.php
-
-
-
-// Route pour le tableau de bord
-Route::get('/dashboard', [ReferentielController::class, 'index'])->name('dashadmin');
-
-// Route pour récupérer les données d'un référentiel spécifique
 Route::get('/api/referentiel/{id}/data', [ReferentielController::class, 'getData']);
 
 Route::post('/useradmin/ajouter', [AuthController::class, 'store_admin'])->name('useradmin.ajouter');
@@ -162,7 +154,7 @@ Route::post('/userIn/ajouter', [AuthController::class, 'store_userIn'])->name('s
 Route::delete('/userIn/{id}/supprimer', [AuthController::class, 'destroy_userIn'])->name('destroy_userIn');
 Route::put('/evaluateur_in/utilisateurs/{id}', [AuthController::class, 'update_userIn'])->name('evaluateur_in.utilisateurs.update');
 Route::get('/RAQ/utilisateurs', [AuthController::class, 'RAQIndex'])->name('RAQ.utilisateurs');
-Route::post('/RAQ/ajouter', [AuthController::class, 'store_RAQ'])->name('store_userIn');
+Route::post('/RAQ/ajouter', [AuthController::class, 'store_RAQ'])->name('store_RAQ');
 Route::delete('/RAQ/{id}/supprimer', [AuthController::class, 'destroy_RAQ'])->name('destroy_RAQ');
 Route::put('/RAQ/utilisateurs/{id}', [AuthController::class, 'update_RAQ'])->name('RAQ.utilisateurs.update');
 

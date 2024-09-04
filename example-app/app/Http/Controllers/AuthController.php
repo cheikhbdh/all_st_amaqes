@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Requestlogin;
+use App\Models\etablissement;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -325,6 +326,14 @@ public function userInIndex()
     $usedFiliereIds = $users->pluck('filières_id')->toArray(); // Récupérer les ID des filières utilisées par les évaluateurs internes
     $filieres = Filière::whereNotIn('id', $usedFiliereIds)->get(); // Sélectionner les filières qui ne sont pas utilisées
     return view('dashadmin.interne_users', compact('users', 'filieres'));
+}
+       
+public function RAQIndex()
+{
+    $users = User::where('role', 'RAQ')->get();
+    $usedetablissementIds = $users->pluck('idetablissements')->toArray(); // Récupérer les ID des filières utilisées par les évaluateurs internes
+    $etablissements = etablissement::whereNotIn('id', $usedetablissementIds)->get(); // Sélectionner les filières qui ne sont pas utilisées
+    return view('dashadmin.RAQ', compact('users', 'etablissements'));
 }
 
 public function store_userIn(Request $request)

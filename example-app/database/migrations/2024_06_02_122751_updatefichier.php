@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::table('fichiers', function (Blueprint $table) {
-            $table->unsignedBigInteger('idfiliere')->nullable(); // Changed to nullable for flexibility
-            $table->foreign('idfiliere')->references('id')->on('filieres')->onDelete('cascade');
+            $table->unsignedBigInteger('idfiliere')->nullable(); 
+            $table->foreign('idfiliere')->references('id')->on('filières')->onDelete('cascade');
         });
     }
 

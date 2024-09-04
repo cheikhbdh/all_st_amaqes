@@ -180,6 +180,11 @@
               <i class="bi bi-circle"></i><span>Evaluateurs interne</span>
             </a>
           </li>
+          <li>
+            <a href="{{ route('evaluateur_in.utilisateurs') }}">
+              <i class="bi bi-circle"></i><span>RAQ</span>
+            </a>
+          </li>
         </li>
         <!-- 
         <li>

@@ -13,7 +13,6 @@ use App\Models\Filiereinvite;
 use Illuminate\Support\Facades\Storage;
 use PDF;
 class HomeController extends Controller
-
 {
     public function indexevaluation()
     {
@@ -172,174 +171,137 @@ public function getScores()
 
     return response()->json($result, 200);
 }
-public function generatePDF()
-{
-    $data = $this->getDataForPdf(); 
+// public function generatePDF()
+// {
+//     $data = $this->getDataForPdf(); 
 
-    // Assurez-vous que les données sont en UTF-8
-    array_walk_recursive($data, function(&$value) {
-        $value = mb_convert_encoding($value, 'UTF-8', 'auto');
-    });
+//     // Générer les graphiques et les sauvegarder comme images
+//     foreach ($data['champs'] as $index => $champ) {
+//         $labels = [];
+//         $scores = [];
 
-    // Vérifiez si les images de graphiques sont correctement générées
-    foreach ($data['champs'] as $index => $champ) {
-        $labels = [];
-        $scores = [];
+//         foreach ($champ['graph'] as $critereScore) {
+//             $labels[] = $critereScore['critere'];
+//             $scores[] = $critereScore['score'];
+//         }
 
-        foreach ($champ['graph'] as $critereScore) {
-            $labels[] = mb_convert_encoding($critereScore['critere'], 'UTF-8', 'auto');
-            $scores[] = $critereScore['score'];
-        }
+//         // Créer le graphique
+//         $chart = new Chart;
+//         $chart->labels($labels);
+//         $chart->dataset('Scores par Critère', 'bar', $scores)
+//               ->backgroundColor('rgba(54, 162, 235, 0.6)')
+//               ->color('rgba(54, 162, 235, 1)');
 
-        $chartPath = $this->generateChartWithGD($labels, $scores);
-        
-        if (!file_exists(public_path('storage/' . $chartPath))) {
-            return response()->json(['error' => 'Erreur lors de la création des graphiques.'], 500);
-        }
+//         // Sauvegarder le graphique comme image
+//         $chartPath = 'charts/champ_'.$index.'_graph.png';
+//         Storage::disk('public')->put($chartPath, $chart->api());
 
-        $data['champs'][$index]['graph_image'] = public_path('storage/' . $chartPath);
-    }
+//         // Ajouter le chemin de l'image générée aux données du champ
+//         $data['champs'][$index]['graph_image'] = public_path('storage/'.$chartPath);
+//     }
 
-    // Charger la vue avec les données
-    try {
-        $pdf = PDF::loadView('layout.rapport-auto-evaluation', $data)
-                  ->setPaper('a4', 'portrait');
+//     // Charger la vue avec les données
+//     $pdf = PDF::loadView('layout.rapport-auto-evaluation', $data)
+//               ->setPaper('a4', 'portrait');
 
-        return $pdf->download('rapport-auto-evaluation.pdf');
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'Erreur lors de la génération du PDF: ' . $e->getMessage()], 500);
-    }
-}
-public function generateChartWithGD($labels, $scores)
-{
-    $width = 700;
-    $height = 230;
-    $image = imagecreatetruecolor($width, $height);
-    $bgColor = imagecolorallocate($image, 255, 255, 255);
-    $barColor = imagecolorallocate($image, 54, 162, 235);
-    $textColor = imagecolorallocate($image, 0, 0, 0);
+//     // Générer et retourner le PDF
+//     return $pdf->download('rapport-auto-evaluation.pdf');
+// }
 
-    imagefill($image, 0, 0, $bgColor);
+// private function getDataForPdf()
+// {
+//     $user = auth()->user();
+//     $idFiliere = $user->filières_id;
+//     $champs = Champ::with('references.criteres.preuves')->get();
+//     $invitationIds = Filiereinvite::where('idfiliere', $idFiliere)
+//         ->where('invitation', 1)
+//         ->pluck('id');
 
-    // Draw bars
-    $barWidth = 40;
-    $barSpacing = 20;
-    $x = 50;
-    foreach ($scores as $score) {
-        imagefilledrectangle($image, $x, $height - $score * 10 - 30, $x + $barWidth, $height - 30, $barColor);
-        $x += $barWidth + $barSpacing;
-    }
+//     $data = [
+//         'title' => 'Rapport d\'Autoévaluation',
+//         'authority' => 'Autorité Mauritanienne d\'Assurance Qualité de l\'Enseignement Supérieur',
+//         'champs' => [],
+//     ];
 
-    // Draw labels
-    $x = 50;
-    foreach ($labels as $label) {
-        imagestring($image, 3, $x, $height - 20, $label, $textColor);
-        $x += $barWidth + $barSpacing;
-    }
+//     foreach ($champs as $champ) {
+//         $criteresScores = [];
+//         $champData = [
+//             'name' => $champ->name,
+//             'references' => [],
+//             'graph' => [],
+//         ];
 
-    // Save image
-    $chartPath = 'charts/chart.png';
-    imagepng($image, public_path('storage/' . $chartPath));
-    imagedestroy($image);
+//         foreach ($champ->references as $reference) {
+//             $referenceData = [
+//                 'signature' => $reference->signature,
+//                 'nom' => $reference->nom,
+//                 'criteres' => [],
+//             ];
 
-    return $chartPath;
-}
+//             foreach ($reference->criteres as $critere) {
+//                 $critereData = [
+//                     'signature' => $critere->signature,
+//                     'nom' => $critere->nom,
+//                     'preuves' => [],
+//                 ];
 
+//                 foreach ($critere->preuves as $preuve) {
+//                     $evaluation = EvaluationInterne::where('idpreuve', $preuve->id)
+//                         ->whereIn('idfiliereinvite', $invitationIds)
+//                         ->first();
 
-private function getDataForPdf()
-{
-    $user = auth()->user();
-    $idFiliere = $user->filières_id;
-    $champs = Champ::with('references.criteres.preuves')->get();
-    $invitationIds = Filiereinvite::where('idfiliere', $idFiliere)
-        ->where('invitation', 1)
-        ->pluck('id');
+//                     $response = $this->mapScoreToResponse($evaluation->score ?? 0);
 
-    $data = [
-        'title' => 'Rapport d\'Autoévaluation',
-        'authority' => 'Autorité Mauritanienne d\'Assurance Qualité de l\'Enseignement Supérieur',
-        'champs' => [],
-    ];
+//                     $preuveData = [
+//                         'description' => $preuve->description,
+//                         'response' => ucfirst($response),
+//                         'commentaire' => $evaluation->commentaire ?? '',
+//                         'fichier' => $evaluation->fichier ? Storage::url($evaluation->fichier->fichier) : null,
+//                     ];
 
-    foreach ($champs as $champ) {
-        $criteresScores = [];
-        $champData = [
-            'name' => $champ->name,
-            'references' => [],
-            'graph' => [],
-        ];
+//                     $critereData['preuves'][] = $preuveData;
+//                 }
 
-        foreach ($champ->references as $reference) {
-            $referenceData = [
-                'signature' => $reference->signature,
-                'nom' => $reference->nom,
-                'criteres' => [],
-            ];
+//                 $referenceData['criteres'][] = $critereData;
+//             }
 
-            foreach ($reference->criteres as $critere) {
-                $critereData = [
-                    'signature' => $critere->signature,
-                    'nom' => $critere->nom,
-                    'preuves' => [],
-                ];
+//             $champData['references'][] = $referenceData;
+//         }
 
-                foreach ($critere->preuves as $preuve) {
-                    $evaluation = EvaluationInterne::where('idpreuve', $preuve->id)
-                        ->whereIn('idfiliereinvite', $invitationIds)
-                        ->first();
+//         // Calcul des scores par critère
+//         foreach ($champ->references as $reference) {
+//             foreach ($reference->criteres as $critere) {
+//                 $score = EvaluationInterne::where('idcritere', $critere->id)
+//                     ->where('idchamps', $champ->id)
+//                     ->whereIn('idfiliereinvite', $invitationIds)
+//                     ->sum('score');
 
-                    $response = $this->mapScoreToResponse($evaluation->score ?? 0);
+//                 $criteresScores[] = [
+//                     'critere' => $critere->signature,
+//                     'score' => $score,
+//                 ];
+//             }
+//         }
 
-                    $preuveData = [
-                        'description' => $preuve->description,
-                        'response' => ucfirst($response),
-                        'commentaire' => $evaluation->commentaire ?? '',
-                        'fichier' => $evaluation->fichier ? Storage::url($evaluation->fichier->fichier) : null,
-                    ];
+//         $champData['graph'] = $criteresScores;
+//         $data['champs'][] = $champData;
+//     }
 
-                    $critereData['preuves'][] = $preuveData;
-                }
+//     return $data;
+// }
 
-                $referenceData['criteres'][] = $critereData;
-            }
+// private function mapScoreToResponse($score)
+// {
+//     switch ($score) {
+//         case 2:
+//             return 'oui';
+//         case 0:
+//             return 'na';
+//         case -1:
+//             return 'non';
+//         default:
+//             return 'non défini';
+//     }
+// }
 
-            $champData['references'][] = $referenceData;
-        }
-
-        // Calcul des scores par critère
-        foreach ($champ->references as $reference) {
-            foreach ($reference->criteres as $critere) {
-                $score = EvaluationInterne::where('idcritere', $critere->id)
-                    ->where('idchamps', $champ->id)
-                    ->whereIn('idfiliereinvite', $invitationIds)
-                    ->sum('score');
-
-                $criteresScores[] = [
-                    'critere' => $critere->signature,
-                    'score' => $score,
-                ];
-            }
-        }
-
-        $champData['graph'] = $criteresScores;
-        $data['champs'][] = $champData;
-    }
-
-    return $data;
-}
-
-private function mapScoreToResponse($score)
-{
-    switch ($score) {
-        case 2:
-            return 'oui';
-        case 0:
-            return 'na';
-        case -1:
-            return 'non';
-        default:
-            return 'non défini';
-    }
-}
-
-}
+ }

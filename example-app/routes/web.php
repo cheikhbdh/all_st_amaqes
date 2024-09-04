@@ -148,7 +148,7 @@ Route::delete('/filiereM/{id}', [EducationController::class, 'destroyFiliereM'])
 
 
 
-Route::get('/evaluateur_in/utilisateurs', [AuthController::class, 'userInIndex'])->name('evaluateur_in.utilisateurs');
+
 
 
 Route::get('/evaluateur_ex/utilisateurs', [AuthController::class, 'userExIndex'])->name('evaluateur_ex.utilisateurs');
@@ -157,11 +157,14 @@ Route::post('/userEx/ajouter', [AuthController::class, 'store_userEx'])->name('s
 Route::put('/userEx/{id}/modifier', [AuthController::class, 'update_userEx'])->name('update_userEx');
 Route::delete('/userEx/{id}/supprimer', [AuthController::class, 'destroy_userEx'])->name('destroy_userEx');
 
-
 Route::get('/evaluateur_in/utilisateurs', [AuthController::class, 'userInIndex'])->name('evaluateur_in.utilisateurs');
 Route::post('/userIn/ajouter', [AuthController::class, 'store_userIn'])->name('store_userIn');
 Route::delete('/userIn/{id}/supprimer', [AuthController::class, 'destroy_userIn'])->name('destroy_userIn');
 Route::put('/evaluateur_in/utilisateurs/{id}', [AuthController::class, 'update_userIn'])->name('evaluateur_in.utilisateurs.update');
+Route::get('/RAQ/utilisateurs', [AuthController::class, 'RAQIndex'])->name('RAQ.utilisateurs');
+Route::post('/RAQ/ajouter', [AuthController::class, 'store_RAQ'])->name('store_userIn');
+Route::delete('/RAQ/{id}/supprimer', [AuthController::class, 'destroy_RAQ'])->name('destroy_RAQ');
+Route::put('/RAQ/utilisateurs/{id}', [AuthController::class, 'update_RAQ'])->name('RAQ.utilisateurs.update');
 
 
 

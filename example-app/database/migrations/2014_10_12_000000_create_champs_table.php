@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('champs', function (Blueprint $table) {
+        Schema::create('referentiels', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignId('referentiel_id')->constrained('referentiels')->onDelete('cascade');
+            $table->string('name')->unique(); // Unique constraint as per your controller validation
             $table->timestamps();
         });
     }
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('champs');
+        Schema::dropIfExists('referentiels');
     }
 };

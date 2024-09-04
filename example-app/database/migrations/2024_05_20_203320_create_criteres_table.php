@@ -9,18 +9,21 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('criteres', function (Blueprint $table) {
+        Schema::create('champs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('reference_id')->constrained('references')->onDelete('cascade');
-            $table->string('nom');
+            $table->string('name');
+            $table->foreignId('referentiel_id')->constrained('referentiels')->onDelete('cascade');
             $table->timestamps();
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
-        Schema::dropIfExists('criteres');
+        Schema::dropIfExists('champs');
     }
 };

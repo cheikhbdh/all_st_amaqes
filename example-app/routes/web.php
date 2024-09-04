@@ -60,7 +60,7 @@ Route::middleware(['auth', 'redirectIfnotEVL_I'])->group(function () {
         return view('layout.scorechamp');
     });
     
-
+    Route::get('/download-pdf', [HomeController::class, 'generatePDF'])->name('download.pdf');
     
     Route::get('/indexevaluation', [Homecontroller::class, 'indexevaluation'])->name('indexevaluation');
     Route::post('/evaluate', [Homecontroller::class, 'evaluate'])->name('evaluate');
@@ -225,6 +225,9 @@ Route::get('/filieres/{id}/champs', [FiliereController::class, 'champs'])->name(
 Route::get('/champs/{filiereInviteId}/{champId}/resultats', [ChampController::class, 'resultats'])->name('champs.resultats');
 Route::get('/downloadFile/{filename}', [ChampController::class, 'downloadFile'])->name('downloadFile');
 //Route::get('/get-scores', [ChampController::class, 'getScores'])->name('getScores');
+// routes/web.php
+
+
 
 
 });

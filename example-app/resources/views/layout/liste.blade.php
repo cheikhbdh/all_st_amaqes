@@ -8,6 +8,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        #download-pdf {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10; /* Assurez-vous que le bouton est au-dessus du graphique */
+    display: none; /* Par défaut, le bouton est caché */
+}
+
         .custom-container {
             max-width: 1200px;
             margin: auto;
@@ -193,6 +201,7 @@
                     <div id="chartContainer">
                         <h3 class="chart-title text-center mb-4">Taux globale de conformité aux normes de qualité</h3>
                         <canvas id="conformityChart" ></canvas>
+                        <button id="downloadPdfBtn" class="btn btn-primary">Télécharger en PDF</button>
                     </div>
                     @endif
                     <div id="snackbar"></div>
@@ -222,9 +231,26 @@
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Vos autres scripts ici
+
+    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+
+    if (downloadPdfBtn) {
+        downloadPdfBtn.addEventListener('click', function() {
+            window.location.href = "{{ route('download.pdf') }}";
+        });
+    } else {
+        console.error("Le bouton Télécharger en PDF n'a pas été trouvé.");
+    }
+});
+
+</script>
 @if(!$champNonEvaluer && count($tauxConformites) > 0)
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+    
         const chnev = @json($CHNEV);
         const totalChamps = 5;
         let evaluatedChamps = 5 - chnev.length;
@@ -288,10 +314,13 @@
                 }
             }
         });
+       
     });
+   
 </script>
 @else
 <script>
+   
     document.addEventListener('DOMContentLoaded', (event) => {
         
         const champsNonEvaluer = @json($champNonEvaluer);
@@ -454,7 +483,7 @@
     
         updateProgressBar();
     });
-    
+
     </script>
   @endif    
 </body>

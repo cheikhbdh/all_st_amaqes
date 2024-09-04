@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Facade;
-
+use ConsoleTVs\Charts\Facades\Charts;
 return [
 
     /*
@@ -39,6 +39,11 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
+   'providers' => [
+    ConsoleTVs\Charts\ChartsServiceProvider::class,
+    ],
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -191,7 +196,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
+        ConsoleTVs\Charts\ChartsServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -219,7 +224,9 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // 'ExampleClass' => App\Example\ExampleClass::class,
+
+    'Charts' => ConsoleTVs\Charts\Facades\Charts::class,
+
     ])->toArray(),
 
 ];

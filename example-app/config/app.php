@@ -39,9 +39,10 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
-   'providers' => [
+'providers' => [
     ConsoleTVs\Charts\ChartsServiceProvider::class,
-    ],
+    Barryvdh\Snappy\ServiceProvider::class,
+],
 
 
 
@@ -225,7 +226,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
 
-    'Charts' => ConsoleTVs\Charts\Facades\Charts::class,
+    // 'Charts' => ConsoleTVs\Charts\Facades\Charts::class,
 
     ])->toArray(),
 

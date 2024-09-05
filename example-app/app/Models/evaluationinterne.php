@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class EvaluationInterne extends Model
+class evaluationinterne extends Model
 {
     use HasFactory;
 
@@ -40,7 +40,7 @@ class EvaluationInterne extends Model
 
     public function filiere(): BelongsTo
     {
-        return $this->belongsTo(Filiere::class, 'idfiliere');
+        return $this->belongsTo(Filière::class, 'idfiliere');
     }
 
     public function critere()

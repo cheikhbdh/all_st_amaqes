@@ -27,9 +27,9 @@
             <span class="line line3"></span>
         </div>
         <ul class="menu-items">
-            <li><a href="/indexevaluation">Home</a></li>
-            <li><a href="/scores_champ">resultat</a></li>
-            <li><a href="#testimonials" id="profile-link" class="nn">account</a></li>
+            <li><a href="/indexevaluation">Page d'accueil</a></li>
+            <li><a href="/scores_champ">Résultat</a></li>
+            <li><a href="#testimonials" id="profile-link" class="nn">Se déconnecter</a></li>
         </ul>
         <div class="logo">
             <img src="{{ asset('assets/img/amaqes2.png') }}" alt="Logo" height="30">

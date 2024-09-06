@@ -18,6 +18,6 @@ class Fichier extends Model
 
     public function filiere()
     {
-        return $this->belongsTo(Filiere::class, 'idfiliere');
+        return $this->belongsTo(Filière::class, 'idfiliere');
     }
 }

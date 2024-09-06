@@ -107,14 +107,6 @@ Route::get('/resultat', [Homecontroller::class, 'evaluation_interne'])->name('re
         return view('dashadmin.profile');
     })->name('profile');
 
-// web.php
-
-
-
-// Route pour le tableau de bord
-Route::get('/dashboard', [ReferentielController::class, 'index'])->name('dashadmin');
-
-// Route pour récupérer les données d'un référentiel spécifique
 Route::get('/api/referentiel/{id}/data', [ReferentielController::class, 'getData']);
 
 Route::post('/useradmin/ajouter', [AuthController::class, 'store_admin'])->name('useradmin.ajouter');

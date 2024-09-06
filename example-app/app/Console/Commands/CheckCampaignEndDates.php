@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use App\Models\Invitation;
 use Illuminate\Support\Facades\Log;
 
-class CheckInvitations extends Command
+class CheckCampaignEndDates extends Command
 {
     protected $signature = 'invitations:check';
     protected $description = 'Check for finished invitations and create notifications';

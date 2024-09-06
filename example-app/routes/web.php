@@ -7,6 +7,7 @@ use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Homecontroller;
 use App\Http\Controllers\ReferentielController;
+use App\Http\Controllers\RAQController;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\CampaignController;
@@ -66,7 +67,22 @@ Route::middleware(['auth', 'redirectIfnotEVL_I'])->group(function () {
     Route::post('/evaluate', [Homecontroller::class, 'evaluate'])->name('evaluate');
 });
 
-
+Route::middleware(['auth','isRAQ'])->group(function () {
+    Route::get('/RAQ', [RAQController::class, 'index'])->name('dashRAQ');
+    Route::get('/profileR', function () {
+        return view('RAQ.profile');
+    })->name('profileR');
+    Route::put('/profil/updateR', [RAQController::class, 'update_profilR'])->name('profil.updateR');
+    Route::put('/profile/update-passwordR', [RAQController::class, 'updatePasswordR'])->name('profile.update-passwordR');
+    Route::get('/departementR', [RAQController::class, 'indexDepartementR'])->name('departement.indexR');
+    Route::put('/departementR/{id}', [RAQController::class, 'updateDepartementR'])->name('departement.updateR');
+    Route::delete('/departementR/{id}', [RAQController::class, 'destroyDepartementR'])->name('departement.destroyR');
+    Route::post('/departementR', [RAQController::class, 'storeDepartementR'])->name('departement.storeR');
+    Route::get('/filiereR', [RAQController::class, 'indexFiliereR'])->name('filiere.indexR');
+    Route::put('/filiereR/{id}', [RAQController::class, 'updateFiliereR'])->name('filiere.updateR');
+    Route::delete('/filiereR/{id}', [RAQController::class, 'destroyFiliereR'])->name('filiere.destroyR');
+    Route::post('/filiereR', [RAQController::class, 'storeFiliereR'])->name('filiere.storeR');
+});
 // Middleware for admin users
 Route::middleware(['auth', 'redirectIfAdmin'])->group(function () {
    
@@ -162,7 +178,7 @@ Route::post('/userIn/ajouter', [AuthController::class, 'store_userIn'])->name('s
 Route::delete('/userIn/{id}/supprimer', [AuthController::class, 'destroy_userIn'])->name('destroy_userIn');
 Route::put('/evaluateur_in/utilisateurs/{id}', [AuthController::class, 'update_userIn'])->name('evaluateur_in.utilisateurs.update');
 Route::get('/RAQ/utilisateurs', [AuthController::class, 'RAQIndex'])->name('RAQ.utilisateurs');
-Route::post('/RAQ/ajouter', [AuthController::class, 'store_RAQ'])->name('store_userIn');
+Route::post('/RAQ/ajouter', [AuthController::class, 'store_RAQ'])->name('store_RAQ');
 Route::delete('/RAQ/{id}/supprimer', [AuthController::class, 'destroy_RAQ'])->name('destroy_RAQ');
 Route::put('/RAQ/utilisateurs/{id}', [AuthController::class, 'update_RAQ'])->name('RAQ.utilisateurs.update');
 

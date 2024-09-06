@@ -53,5 +53,13 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Filière::class, 'filières_id');
     }
+    public function établissement()
+    {
+        return $this->belongsTo(etablissement::class, 'idetablissements');
+    }
+    public function institution()
+    {
+        return $this->établissement()->with('institution');
+    }
     
 }

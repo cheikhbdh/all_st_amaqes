@@ -50,6 +50,8 @@ class AuthController extends Controller
                 return redirect()->intended(route('dashadmin'));
             } elseif ($user->role === 'evaluateur_i') {
                 return redirect()->intended(route('indexevaluation'));
+            }elseif ($user->role === 'RAQ') {
+                return redirect()->intended(route('dashRAQ'));
             } else {
                 return redirect()->intended(route('register'));
             }
@@ -331,8 +333,8 @@ public function userInIndex()
 public function RAQIndex()
 {
     $users = User::where('role', 'RAQ')->get();
-    $usedetablissementIds = $users->pluck('idetablissements')->toArray(); // Récupérer les ID des filières utilisées par les évaluateurs internes
-    $etablissements = etablissement::whereNotIn('id', $usedetablissementIds)->get(); // Sélectionner les filières qui ne sont pas utilisées
+    $usedetablissementIds = $users->pluck('idetablissements')->toArray(); 
+    $etablissements = etablissement::whereNotIn('id', $usedetablissementIds)->get(); 
     return view('dashadmin.RAQ', compact('users', 'etablissements'));
 }
 
@@ -353,6 +355,28 @@ public function store_userIn(Request $request)
     $utilisateur->password = Hash::make($validated['password']);
     $utilisateur->role = $validated['role'];
     $utilisateur->filières_id = $validated['fil'];
+    $utilisateur->save();
+
+    return redirect()->back()->with('success', 'Utilisateur ajouté avec succès');
+}
+
+public function store_RAQ(Request $request)
+{
+    // Validation des données
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'password' => 'required|string|min:8',
+        'role' => 'required|string|in:RAQ', // Assurez-vous que le rôle est valide
+        'fil' => 'nullable|exists:etablissements,id',
+    ]);
+
+    $utilisateur = new User();
+    $utilisateur->name = $validated['name'];
+    $utilisateur->email = $validated['email']; 
+    $utilisateur->password = Hash::make($validated['password']);
+    $utilisateur->role = $validated['role'];
+    $utilisateur->idetablissements = $validated['fil'];
     $utilisateur->save();
 
     return redirect()->back()->with('success', 'Utilisateur ajouté avec succès');
@@ -395,7 +419,56 @@ public function update_userIn(Request $request, $id)
         return redirect()->back()->with('success', 'Utilisateur mis à jour avec succès');
     }
 
+    public function update_RAQ(Request $request, $id)
+    {
+        // Validation des données
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($id),
+            ],
+            'password' => 'nullable|string|min:8',
+            'role' => 'required|string',
+            'fil' => 'required|integer',
+        ]);
+
+        // Trouver l'utilisateur à modifier
+        $utilisateur = User::find($id);
+        if (!$utilisateur) {
+            return redirect()->back()->with('error', 'Utilisateur non trouvé');
+        }
+
+        // Mise à jour des informations de l'utilisateur
+        $utilisateur->name = $request->name;
+        $utilisateur->email = $request->email;
+        if ($request->filled('password')) {
+            $utilisateur->password = Hash::make($request->password);
+        }
+        $utilisateur->role = $request->role;
+        $utilisateur->idetablissements = $request->fil;
+
+        $utilisateur->save();
+
+        return redirect()->back()->with('success', 'Utilisateur mis à jour avec succès');
+    }
+
 public function destroy_userIn($id)
+{
+    $user = User::find($id);
+
+    if ($user) {
+        $user->delete();
+        return redirect()->back()->with('success', 'Utilisateur supprimé avec succès');
+    } else {
+        return redirect()->back()->with('error', 'Utilisateur non trouvé');
+    }
+}
+
+public function destroy_RAQ($id)
 {
     $user = User::find($id);
 

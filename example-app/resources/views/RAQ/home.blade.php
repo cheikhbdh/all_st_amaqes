@@ -66,14 +66,14 @@
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
               <h6>{{ session('user_name') }}</h6>
-              <span>Admin</span>
+              <span>RAQ</span>
             </li>
             <li>
               <hr class="dropdown-divider">
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="{{ route('profile') }}">
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('profileR') }}">
                 <i class="bi bi-person"></i>
                 <span>Mon Profile</span>
               </a>
@@ -104,113 +104,46 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
       <li class="nav-item">
-        <a class="nav-link " href="{{ route('dashadmin') }}">
+        <a class="nav-link " href="{{ route('dashRAQ') }}">
           <i class="bi bi-grid"></i>
-          <span>{{ __('messages.Dashboard') }}</span>
+          <span>Dashboard</span>
         </a>
       </li><!-- End Dashboard Nav -->
-      <li class="nav-item">
-        <a  class="nav-link collapsed" href="{{ route('show.referent') }}">
-          <i class="bi bi-book"></i><span>Référentiels</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{{route('invitations.index')}}">
-          <i class="bi bi-envelope"></i><span>Campagne d'evaluation</span>
-        </a>
-      </li>
+     
+     
 
      <!-- End Components Nav -->
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>{{ __('messages.Gestions EES') }}</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="{{route('institutions.index')}}">
-              <i class="bi bi-circle"></i><span>Institutions</span>
-            </a>
-          </li>
-          <li>
-            <a href="{{route('etablissement.index')}}">
-              <i class="bi bi-circle"></i><span>Établissements</span>
-            </a>
-          </li>
-          <li>
-            <a href="{{route('departement.index')}}">
-              <i class="bi bi-circle"></i><span> Départements</span>
-            </a>
-          </li>
-            <li class="nav-item1">
-              <a href="#" data-bs-target="#filiere-nav" data-bs-toggle="collapse">
-                <i class="bi bi-circle"></i><span>Filières</span><i class="bi bi-chevron-down ms-auto"></i>
-              </a>
-              <ul id="filiere-nav" class="nav-content collapse" data-bs-parent="#components-nav"style="padding-left: 15px;">
-                <li>
-                  <a href="{{route('filiere.index')}}">
-                    <i class="bi bi-circle"></i><span>Licence</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="{{route('filiere.indexM')}}">
-                    <i class="bi bi-circle"></i><span>Master</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="{{route('filiere.indexD')}}">
-                    <i class="bi bi-circle"></i><span>Doctorat</span>
-                  </a>
-                </li>
-              </ul>
-            </li>
-        </ul>
-      </li><!-- End Forms Nav -->
+      
+      
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-layout-text-window-reverse"></i><span>{{ __('messages.Gestions') }}</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="{{ route('admin.utilisateurs') }}">
-              <i class="bi bi-circle"></i><span>Admins</span>
-            </a>
-          </li>
-          <li>
-            <a href="{{ route('evaluateur_in.utilisateurs') }}">
-              <i class="bi bi-circle"></i><span>Evaluateurs interne</span>
-            </a>
-          </li>
-          <li>
-            <a href="{{ route('RAQ.utilisateurs') }}">
-              <i class="bi bi-circle"></i><span>RAQ</span>
-            </a>
-          </li>
-        </li>
-        <!-- 
-        <li>
-          <a href="{{ route('evaluateur_ex.utilisateurs') }}">
-            <i class="bi bi-circle"></i><span>{{ __('messages.Les évaluateur_externe') }}</span>
-          </a>
-        </li>
-
-         -->
-        </ul>
+       
+      
         <!-- Resultat -->
         <li class="nav-item">
           <a class="nav-link collapsed" href="{{ route('campaigns.index') }}">
             <i class="bi bi-calendar"></i>
-            <span>Resultat</span>
+            <span>Evaluateurs interne</span>
           </a>
         </li>
         
       </li><!-- End Tables Nav -->
-      
-      <li class="nav-heading">{{ __('messages.Pages') }}</li>
-      
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ route('profile') }}">
+        <a class="nav-link collapsed" href="{{ route('departement.indexR') }}">
+          <i class="bi bi-building"></i>
+          <span>Départements</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ route('filiere.indexR') }}">
+          <i class="bi bi-book"></i>
+          <span>Filières</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ route('profileR') }}">
           <i class="bi bi-person"></i>
-          <span>{{ __('messages.Profile') }}</span>
+          <span>Profile</span>
         </a>
       </li><!-- End Profile Page Nav -->
   

@@ -5,11 +5,12 @@
   <link rel="stylesheet" href="{{ asset('assets/css/ajout.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/css/edit.css') }}">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <main id="main" class="main">
   <div class="pagetitle">
     <div class="d-flex justify-content-between align-items-center">
-        <h1>Les évaluateur_interne</h1>
+        <h1>Les RAQs</h1>
     </div>
     <nav>
         <ol class="breadcrumb">
@@ -47,7 +48,7 @@
                     </ul>
                   </div>
                 @endif
-                <form id="ajouterForm" action="{{ route('store_userIn') }}" method="POST">
+                <form id="ajouterForm" action="{{ route('store_RAQ') }}" method="POST">
                   @csrf
                   <label for="name">Nom:</label>
                   <input type="text" id="name" name="name" required>
@@ -66,10 +67,11 @@
                     <option value="RAQ">RAQ</option>
                   </select>
                   <br><br>
-                  <label for="editFil">Institutions:</label>
+                  <label for="editFil">Etablissements:</label>
                   <select id="editFil" name="fil" class="form-control" required>
-                    @foreach($filieres as $filiere)
-                      <option value="{{ $filiere->id }}">{{ $filiere->nom }}</option>
+                    <option value="" disabled selected>Choisir un établissement</option>
+                    @foreach($etablissements as $etablissement)
+                      <option value="{{ $etablissement->id }}">{{ $etablissement->nom }}</option>
                     @endforeach
                   </select>
                   <br><br>
@@ -82,7 +84,7 @@
                 <tr>
                   <th>Nom</th>
                   <th>Email</th>
-                  <th>Filiere</th>
+                  <th>Etablissement</th>
                   <th colspan="2">Action</th>
                 </tr>
               </thead>
@@ -92,17 +94,17 @@
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>
-                      @if ($user->filiere)
-                        {{ $user->filiere->nom }}
+                      @if ($user->établissement)
+                        {{ $user->établissement->nom }}
                       @else
-                        Aucune filière associée
+                        Aucune etablissement associée
                       @endif
                     </td>
                     <td>
-                      <button class="btn btn-sm modifierBtn" data-id="{{ $user->id }}"><i class="bi bi-pencil-fill text-warning"></i> Modifier</button>
+                      <button class="btn btn-sm modifierBtn" data-id="{{ $user->id }}" data-etablissement-id="{{ $user->idetablissements }}"><i class="bi bi-pencil-fill text-warning"></i> Modifier</button>
                     </td>
                     <td>
-                      <form action="{{ route('destroy_userIn', $user->id) }}" method="POST" class="supprimerForm">
+                      <form action="{{ route('destroy_RAQ', $user->id) }}" method="POST" class="supprimerForm">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-sm"><i class="bi bi-trash-fill text-danger"></i>Supprimer</button>
@@ -137,13 +139,14 @@
         <br><br>
         <label for="editRole">Rôle:</label>
         <select id="editRole" name="role" class="form-control" required>
-          <option value="evaluateur_i">évaluateur_In</option>
+          <option value="RAQ" selected>RAQ</option>
         </select>
         <br><br>
-        <label for="editFil">Filiéres:</label>
+        <label for="editFil">Etablissements:</label>
         <select id="editFil" name="fil" class="form-control" required>
-          @foreach($filieres as $filiere)
-            <option value="{{ $filiere->id }}">{{ $filiere->nom }}</option>
+        
+          @foreach($etablissements as $etablissement)
+            <option value="{{ $etablissement->id }}">{{ $etablissement->nom }}</option>
           @endforeach
         </select>
         <br><br>
@@ -153,6 +156,83 @@
   </div>
 </main><!-- End #main -->
 <script>
+  document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById("formModal");
+      const ajouterBtn = document.getElementById("ajouterBtn");
+      const span = document.getElementsByClassName("close")[0];
+  
+      ajouterBtn.onclick = function() {
+          modal.style.display = "block";
+      }
+  
+      span.onclick = function() {
+          modal.style.display = "none";
+      }
+  
+      window.onclick = function(event) {
+          if (event.target == modal) {
+              modal.style.display = "none";
+          }
+      }
+  
+      const modifierBtns = document.querySelectorAll('.modifierBtn');
+      const supprimerForms = document.querySelectorAll('.supprimerForm');
+      const editModal = document.getElementById('editModal');
+      const closeModalBtn = editModal.querySelector('.close');
+      const editForm = editModal.querySelector('form');
+      
+      modifierBtns.forEach(button => {
+          button.addEventListener('click', () => {
+              const userId = button.getAttribute('data-id');
+              const row = button.closest('tr');
+              const name = row.cells[0].innerText.trim();
+              const email = row.cells[1].innerText.trim();
+              const etablissementId = button.getAttribute('data-etablissement-id');
+              const role = "RAQ";
+  
+              document.getElementById('editUserId').value = userId;
+              document.getElementById('editName').value = name;
+              document.getElementById('editEmail').value = email;
+              document.getElementById('editRole').value = role;
+              document.getElementById('editFil').value = etablissementId;
+  
+              editForm.action = `/RAQ/utilisateurs/${userId}`;
+              editModal.style.display = 'block';
+          });
+      });
+  
+      closeModalBtn.addEventListener('click', () => {
+          editModal.style.display = "none";
+      });
+  
+      window.addEventListener('click', (event) => {
+          if (event.target === editModal) {
+              editModal.style.display = "none";
+          }
+      });
+  
+      // Confirmation de la suppression avec SweetAlert
+      supprimerForms.forEach(form => {
+          form.addEventListener('submit', function(event) {
+              event.preventDefault(); // Empêche l'envoi du formulaire directement
+              Swal.fire({
+                  title: 'Êtes-vous sûr ?',
+                  text: "Cette action est irréversible !",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Oui, supprimer !',
+                  cancelButtonText: 'Annuler'
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      form.submit(); // Si confirmé, envoie le formulaire
+                  }
+              });
+          });
+      });
+  });
+  </script><script>
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById("formModal");
     const ajouterBtn = document.getElementById("ajouterBtn");
@@ -177,27 +257,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const editModal = document.getElementById('editModal');
     const closeModalBtn = editModal.querySelector('.close');
     const editForm = editModal.querySelector('form');
-
+    
     modifierBtns.forEach(button => {
         button.addEventListener('click', () => {
             const userId = button.getAttribute('data-id');
             const row = button.closest('tr');
             const name = row.cells[0].innerText.trim();
             const email = row.cells[1].innerText.trim();
-            const filiere = row.cells[2].innerText.trim(); // Assurez-vous que le nom de la colonne est correct
-            const role = row.cells[3].innerText.trim(); // Assurez-vous que le nom de la colonne est correct
+            const etablissementId = button.getAttribute('data-etablissement-id');
+            const role = "RAQ";
 
-            // Remplissez le formulaire d'édition avec les données récupérées
             document.getElementById('editUserId').value = userId;
             document.getElementById('editName').value = name;
             document.getElementById('editEmail').value = email;
-            document.getElementById('editRole').value = role; // Assurez-vous que la valeur du rôle correspond à l'option
-            document.getElementById('editFil').value = filiere; // Assurez-vous que la valeur de la filière correspond à l'option
+            document.getElementById('editRole').value = role;
+            document.getElementById('editFil').value = etablissementId;
 
-            // Mettez à jour l'action du formulaire pour l'édition de l'utilisateur spécifique
-            editForm.action = `/evaluateur_in/utilisateurs/${userId}`;
-
-            // Affichez le modal d'édition
+            editForm.action = `/RAQ/utilisateurs/${userId}`;
             editModal.style.display = 'block';
         });
     });
@@ -212,14 +288,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Confirmation de la suppression
-    document.querySelectorAll('.supprimerBtn').forEach(button => {
-        button.addEventListener('click', (event) => {
-            event.preventDefault();
-            const form = button.closest('form');
-            if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
-                form.submit();
-            }
+    // Confirmation de la suppression avec SweetAlert
+    supprimerForms.forEach(form => {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Empêche l'envoi du formulaire directement
+            Swal.fire({
+                title: 'Êtes-vous sûr ?',
+                text: "Cette action est irréversible !",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Oui, supprimer !',
+                cancelButtonText: 'Annuler'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit(); // Si confirmé, envoie le formulaire
+                }
+            });
         });
     });
 });

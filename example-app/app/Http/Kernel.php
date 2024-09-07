@@ -26,6 +26,7 @@ class Kernel extends HttpKernel
         // Autres middlewares...
         'redirectIfAdmin' => \App\Http\Middleware\RedirectIfAdmin::class,
         'redirectIfnotEVL_I' => \App\Http\Middleware\RedirectIfnotEVL_I::class,
+        'isRAQ' => \App\Http\Middleware\CheckRAQ::class,
     ];
 
     /**
